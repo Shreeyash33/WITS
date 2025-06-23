@@ -116,7 +116,10 @@ export default function Adddata() {
 
             <TouchableOpacity
               className="bg-white/60 p-3 rounded-lg mt-4"
-              onPress={() => setIsDateModalVisible(false)}
+              onPress={() => {
+                setIsDateModalVisible(false);
+                setIsCurrentDate(false);
+              }}
             >
               <Text className="text-center text-black text-lg ">Submit</Text>
             </TouchableOpacity>
@@ -169,9 +172,19 @@ export default function Adddata() {
         )}
         <TouchableOpacity
           className="bg-gray-500 p-2 pt-3 rounded-lg mb-4"
-          onPress={() => setIsDateModalVisible(true)}
+          onPress={() => {
+            if (isCurrentDate) {
+              setIsDateModalVisible(true);
+              setIsCurrentDate(false);
+            } else {
+              setSelectedDate(new Date());
+              setIsCurrentDate(true);
+            }
+          }}
         >
-          <Text className="text-white text-lg mb-2 text-center">Set Date</Text>
+          <Text className="text-white text-lg mb-2 text-center">
+            {isCurrentDate ? "Current Date" : "Set Date"}
+          </Text>
         </TouchableOpacity>
 
         <Text className="text-gray-400 text-lg   h-[50px] bg-gray-500 p-2 pt-3 rounded-lg">
