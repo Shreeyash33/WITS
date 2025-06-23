@@ -1,11 +1,8 @@
-
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Animated, Dimensions, Pressable, Text, View } from "react-native";
-import { useRouter } from "expo-router";
-
-
+import { useRouter, useRootNavigationState } from "expo-router";
+import { useSegments } from "expo-router";
 const { width } = Dimensions.get("window");
-
 
 const menuItems = [
   { label: "Dashboard", route: "Dashboard" },
@@ -13,21 +10,27 @@ const menuItems = [
   { label: "History", route: "History" },
 ];
 
-
-export default function Navbar() {
+export function Navbar() {
+  let router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const slideAnim = useRef(new Animated.Value(-width)).current;
-  const router = useRouter();
-  const [currentRoute, setCurrentRoute] = useState("Dashboard");
+
+  const segments = useSegments();
+  const currentRoute = segments[segments.length - 1] || "Dashboard";
+
+  const handleNavigation = (route: string) => {
+    closeMenu();
+    router.push(route as any);
+  };
+
   const openMenu = () => {
     setIsMenuOpen(true);
     Animated.timing(slideAnim, {
       toValue: 0,
-      duration: 500, // dramatic speed
+      duration: 500,
       useNativeDriver: false,
     }).start();
   };
-
 
   const closeMenu = () => {
     Animated.timing(slideAnim, {
@@ -37,22 +40,14 @@ export default function Navbar() {
     }).start(() => setIsMenuOpen(false));
   };
 
-
-  const handleNavigation = (route: string) => {
-    closeMenu();
-    setCurrentRoute(route);
-    router.push(route as any);
-  };
-
-
   return (
-    <View className="w-full bg-red-500 border-b border-gray-300">
-      <View className="flex flex-row items-center justify-between bg-gray-500 p-3 px-6">
+    <View className="w-full bg-red-500 ">
+      <View className="flex flex-row items-center justify-between bg-gray-900 p-3 px-6">
         <Text className="text-4xl font-bold text-white" onPress={openMenu}>
           ☰
         </Text>
-        <Text className=" flex-1 text-center text-white text-lg font-bold">
-         {currentRoute}
+        <Text className="flex-1 text-center text-white text-lg font-bold">
+          {currentRoute}
         </Text>
       </View>
       {isMenuOpen && (
@@ -76,9 +71,7 @@ export default function Navbar() {
               ✕ Close
             </Text>
 
-
             {menuItems.map((item) => (
-             
               <Pressable
                 key={item.route}
                 onPress={() => handleNavigation(item.route)}

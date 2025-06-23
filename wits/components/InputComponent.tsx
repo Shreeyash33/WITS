@@ -20,10 +20,10 @@ export default function InputComponent({
     <View className="flex-1 mb-2">
       <Text className="text-xl font-bold text-white">{label}</Text>
       <TextInput
-        className="bg-white/50 rounded-md h-[50px] text-lg text-white"
+        className="bg-teal-500/10 rounded-md h-[50px] text-lg text-white"
         placeholder={placeholder}
         
-        placeholderTextColor={isFocused ? "white" : "black"}
+        placeholderTextColor="white"
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         value={value}

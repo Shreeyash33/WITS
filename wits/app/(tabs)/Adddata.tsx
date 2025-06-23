@@ -1,5 +1,6 @@
+import formatDate from "@/components/formatDate";
 import InputComponent from "@/components/InputComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
 
 //from https://github.com/farhoudshapouran/react-native-ui-datepicker?tab=readme-ov-file
@@ -7,21 +8,6 @@ import DateTimePicker, {
   DateType,
   useDefaultClassNames,
 } from "react-native-ui-datepicker";
-
-function formatDate(date: Date | undefined): string {
-  if (!date) return "";
-
-  const formatter = new Intl.DateTimeFormat("en-us", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-
-  return formatter.format(date);
-}
 
 export default function Adddata() {
   const defaultClassNames = useDefaultClassNames();
@@ -36,8 +22,8 @@ export default function Adddata() {
   let today = new Date();
   const [isCurrentDate, setIsCurrentDate] = useState(true);
   const [isDateModalVisible, setIsDateModalVisible] = useState(false);
-
   const [dataChanged, setDataChanged] = useState(false);
+
   const handleSubmit = async () => {
     const payload = {
       itemName,
@@ -130,25 +116,25 @@ export default function Adddata() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-gray-800 p-4 ">
+    <ScrollView className="flex-1 bg-black p-4 ">
       {isDateModalVisible && dateModal()}
       <View className="items-center flex-row justify-between flex-1 h-[150px] mb-9">
         <TouchableOpacity
           className={`h-full w-[45%] justify-center items-center
-          ${isLent ? "bg-gray-400 border-gray-500" : "bg-gray-500"} p-4 rounded-full mb-4`}
+          ${isLent ? "bg-teal-700 border-gray-500" : "bg-gray-500"} p-4 rounded-full mb-4`}
           onPress={() => setIsLent(true)}
         >
           <Text>Lent</Text>
         </TouchableOpacity>
         <TouchableOpacity
           className={`h-full w-[45%] justify-center items-center
-            ${isLent ? "bg-gray-500" : "bg-gray-400"}  p-4 rounded-full mb-4`}
+            ${isLent ? "bg-gray-500" : "bg-teal-700"}  p-4 rounded-full mb-4`}
           onPress={() => setIsLent(false)}
         >
           <Text>Stored</Text>
         </TouchableOpacity>
       </View>
-      <View className="bg-gray-700 p-4 rounded-lg">
+      <View className="bg-gray-900 p-4 rounded-lg">
         <InputComponent
           label="Item Name"
           value={itemName}
@@ -171,7 +157,7 @@ export default function Adddata() {
           />
         )}
         <TouchableOpacity
-          className="bg-gray-500 p-2 pt-3 rounded-lg mb-4"
+          className="rounded-lg "
           onPress={() => {
             if (isCurrentDate) {
               setIsDateModalVisible(true);
@@ -182,18 +168,14 @@ export default function Adddata() {
             }
           }}
         >
-          <Text className="text-white text-lg mb-2 text-center">
-            {isCurrentDate ? "Current Date" : "Set Date"}
+          <Text className="text-white text-lg bg-teal-700/60 p-2 pt-3 rounded-lg">
+            {formatDate(
+              selectedDate instanceof Date ? selectedDate : undefined
+            ) || "No Date "}
           </Text>
         </TouchableOpacity>
-
-        <Text className="text-gray-400 text-lg   h-[50px] bg-gray-500 p-2 pt-3 rounded-lg">
-          {formatDate(
-            selectedDate instanceof Date ? selectedDate : undefined
-          ) || "No Date "}
-        </Text>
         <TouchableOpacity
-          className="bg-gray-500 p-2 pt-3 rounded-lg mt-4"
+          className="bg-teal-700 p-2 pt-3 rounded-lg mt-4"
           onPress={handleSubmit}
         >
           <Text className="text-white text-lg mb-2 text-center">Submit</Text>

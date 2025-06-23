@@ -1,4 +1,7 @@
-import { View, Text } from "react-native";
+import { Navbar } from "@/components/Navbar";
+import { useRouter } from "expo-router";
+import { useEffect } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 
 const Suggestions = [
   "It's been a while — maybe check if they still have your stuff.",
@@ -29,9 +32,13 @@ const Suggestions = [
 export default function Dashboard() {
   const randomsuggestion =
     Suggestions[Math.floor(Math.random() * Suggestions.length)];
-
+  const router = useRouter();
+  const handlepress = () => {
+    console.log("button pressed");
+    router.push("Adddata" as any);
+  };
   return (
-    <View className="flex-1 items-center  bg-gray-800 p-4 ">
+    <View className="flex-1 items-center  bg-black p-4 ">
       <View className=" items-center justify-center h-[90%]">
         <Text className="text-4xl font-bold text-gray-300 italic  ">
           Welcome to WITS!
@@ -39,6 +46,14 @@ export default function Dashboard() {
         <Text className="text-md font-light text-white mt-4 italic ">
           {randomsuggestion}
         </Text>
+      </View>
+      <View className=" w-full ">
+        <TouchableOpacity
+          onPress={handlepress}
+          className="bg-white/10 active:bg-white/50 w-full items-center py-3 rounded-md"
+        >
+          <Text className="text-white active:text-black">Add an Item</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

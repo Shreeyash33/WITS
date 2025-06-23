@@ -1,7 +1,7 @@
 import { Slot } from "expo-router";
 import "./globals.css";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Navbar from "@/components/Navbar";
+import {Navbar} from "@/components/Navbar";
 export default function RootLayout() {
   return (
     
