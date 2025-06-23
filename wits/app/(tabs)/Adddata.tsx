@@ -36,7 +36,7 @@ export default function Adddata() {
     };
     try {
       const response = await fetch(
-        "http://localhost/wits-backend/addItem.php",
+        "http://192.168.1.200/backend/addItem.php",
         {
           method: "POST",
           headers: {
@@ -124,14 +124,14 @@ export default function Adddata() {
           ${isLent ? "bg-teal-700 border-gray-500" : "bg-gray-500"} p-4 rounded-full mb-4`}
           onPress={() => setIsLent(true)}
         >
-          <Text>Lent</Text>
+          <Text className="text-white text-xl font-bold">Lent</Text>
         </TouchableOpacity>
         <TouchableOpacity
           className={`h-full w-[45%] justify-center items-center
             ${isLent ? "bg-gray-500" : "bg-teal-700"}  p-4 rounded-full mb-4`}
           onPress={() => setIsLent(false)}
         >
-          <Text>Stored</Text>
+          <Text className="text-white text-xl font-bold">Stored</Text>
         </TouchableOpacity>
       </View>
       <View className="bg-gray-900 p-4 rounded-lg">
