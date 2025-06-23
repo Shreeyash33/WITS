@@ -10,7 +10,7 @@ switch ($method){
         $Item_Name = $input['Item_Name'];
         $Person_Name = $input['Person_Name'];
         $Location = $input['Location'];
-        $Lent = $input['Lent'];
+        $Lent = $input['Lent'];  
         $Date = $input['Date'];
 
 
