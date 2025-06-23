@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Animated, Dimensions, Pressable, Text, View } from "react-native";
-import { useRouter, useRootNavigationState } from "expo-router";
-import { useSegments } from "expo-router";
+import { useRouter, useSegments } from "expo-router";
 const { width } = Dimensions.get("window");
 
 const menuItems = [
   { label: "Dashboard", route: "Dashboard" },
   { label: "Add Data", route: "Adddata" },
   { label: "History", route: "History" },
+  // { label: "Settings", route: "Settings" },
 ];
 
 export function Navbar() {
@@ -52,10 +52,6 @@ export function Navbar() {
       </View>
       {isMenuOpen && (
         <>
-          <Pressable
-            className="absolute top-0 left-0 h-full w-full bg-black/50"
-            onPress={closeMenu}
-          />
           <Animated.View
             className={
               "absolute top-0 left-0 h-[100vh] w-full bg-black/80 p-6 z-20"
