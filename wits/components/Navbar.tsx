@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Animated, Dimensions, Pressable, Text, View } from "react-native";
+import { Animated, Dimensions, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useRouter, useSegments } from "expo-router";
 const { width } = Dimensions.get("window");
 
@@ -43,12 +43,14 @@ export function Navbar() {
   return (
     <View className="w-full bg-red-500 ">
       <View className="flex flex-row items-center justify-between bg-gray-900 p-3 px-6">
-        <Text className="text-4xl font-bold text-white" onPress={openMenu}>
+        <TouchableOpacity className="w-full flex-row" onPress={openMenu}>
+        <Text className="text-4xl w-fit font-bold text-white" >
           ☰
         </Text>
-        <Text className="flex-1 text-center text-white text-lg font-bold">
+        <Text className="w-full text-center text-white text-lg pt-2 font-bold">
           {currentRoute}
         </Text>
+        </TouchableOpacity>
       </View>
       {isMenuOpen && (
         <>
