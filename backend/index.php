@@ -1,5 +1,7 @@
 <?php
-$con = mysqli_connect("localhost","root","","wits");
+header("Access-Control-Allow-Origin:*");
+header("content-Type: application/json");
+$con = mysqli_connect("http://192.168.1.200/backend","root","","wits");
 $response = array();
 if($con){
     $sql = "select * from `track` ";
