@@ -6,18 +6,18 @@ $method = $_SERVER['REQUEST_METHOD'];
 $input = json_decode(file_get_contents('php://input'),true);
 switch ($method){
     case 'POST':
-        $ID = $input['id'];
-        $ItemName = $input['ItemName'];
-        $PersonName = $input['PersonName'];
+        $ID = $input['ID'];
+        $Item_Name = $input['Item_Name'];
+        $Person_Name = $input['Person_Name'];
         $Location = $input['Location'];
         $Lent = $input['Lent'];
-        $Data = $input['Data'];
+        $Date = $input['Date'];
 
 
-        $conn->query("INSERT INTO users(ID,ItemName,PersonName,Location,Lent,Data)VALUES('$ID','$ItemName','$PersonName',
-        '$location','$Lent','$Date')");
+        $conn->query("INSERT INTO users(ID,Item_name,Person_name,Location,Lent,Data)VALUES('$ID','$Item_name','$Person_name',
+        '$Location','$Lent','$Date')");  
 
-        echo json_encode(["message" =>"User added successfully"]);
+        echo json_encode(["message" =>"User added successfully"]); 
 
 
         break;
@@ -36,4 +36,3 @@ switch ($method){
 
 }
 $conn->close();
-?>
