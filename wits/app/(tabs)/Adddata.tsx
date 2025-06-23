@@ -12,6 +12,7 @@ import DateTimePicker, {
 export default function Adddata() {
   const defaultClassNames = useDefaultClassNames();
 
+  const [ID, setID] = useState(0);
   const [isLent, setIsLent] = useState(true);
   const [itemName, setItemName] = useState("");
   const [personName, setPersonName] = useState("");
@@ -25,7 +26,9 @@ export default function Adddata() {
   const [dataChanged, setDataChanged] = useState(false);
 
   const handleSubmit = async () => {
+    setID(ID+1);
     const payload = {
+      ID,
       itemName,
       personName,
       itemLocation,
