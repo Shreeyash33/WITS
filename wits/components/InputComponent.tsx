@@ -17,11 +17,12 @@ export default function InputComponent({
 
     const [isFocused, setIsFocused] = useState(false);
   return (
-    <View className="flex-1 ">
+    <View className="flex-1 mb-2">
       <Text className="text-xl font-bold text-white">{label}</Text>
       <TextInput
-        className="bg-white/50 rounded-md "
+        className="bg-white/50 rounded-md h-[50px] text-lg text-white"
         placeholder={placeholder}
+        
         placeholderTextColor={isFocused ? "white" : "black"}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}

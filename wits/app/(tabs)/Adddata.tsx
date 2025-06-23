@@ -1,7 +1,8 @@
 import InputComponent from "@/components/InputComponent";
 import { useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
 
+//from https://github.com/farhoudshapouran/react-native-ui-datepicker?tab=readme-ov-file
 import DateTimePicker, {
   DateType,
   useDefaultClassNames,
@@ -23,13 +24,19 @@ function formatDate(date: Date | undefined): string {
 }
 
 export default function Adddata() {
+  const defaultClassNames = useDefaultClassNames();
+
   const [isLent, setIsLent] = useState(true);
   const [itemName, setItemName] = useState("");
   const [personName, setPersonName] = useState("");
   const [itemLocation, setItemLocation] = useState("");
   const [selectedDate, setSelectedDate] = useState<DateType | undefined>(
-    undefined
+    new Date()
   );
+  let today = new Date();
+  const [isCurrentDate, setIsCurrentDate] = useState(true);
+  const [isDateModalVisible, setIsDateModalVisible] = useState(false);
+
   const [dataChanged, setDataChanged] = useState(false);
   const handleSubmit = async () => {
     const payload = {
@@ -41,7 +48,6 @@ export default function Adddata() {
         selectedDate instanceof Date ? selectedDate : undefined
       ),
     };
-
     try {
       const response = await fetch(
         "http://localhost/wits-backend/addItem.php",
@@ -66,18 +72,74 @@ export default function Adddata() {
       alert("Server error.");
     }
   };
-const buttonsize=150;
+  const buttonsize = 100;
+
+  const dateModal = () => {
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isDateModalVisible}
+      >
+        <View className="flex-1 bg-black/60 justify-center items-center">
+          <View className="bg-gray-700 rounded-lg p-5 w-11/12">
+            <Text className="text-white text-lg mb-2 text-center">
+              Set Date and Time
+            </Text>
+
+            <View className=" border border-gray-500 rounded-md">
+              <DateTimePicker
+                classNames={{
+                  ...defaultClassNames,
+                  today: "border border-white",
+                  today_label: "text-blue-500",
+                  selected: "border bg-gray-500 border-gray-300",
+                  selected_label: "text-white",
+                  day_label: "text-gray-200",
+                  year_label: "text-gray-200",
+                  month_label: "text-gray-200",
+                  time_label: "text-gray-200",
+                  weekday_label: "text-gray-200",
+                  header: "text-gray-200",
+                  disabled: "opacity-50",
+                }}
+                minDate={today}
+                mode="single"
+                date={selectedDate ?? new Date()}
+                onChange={({ date }: { date: DateType }) =>
+                  setSelectedDate(date)
+                }
+                timePicker={true}
+                use12Hours
+              />
+            </View>
+
+            <TouchableOpacity
+              className="bg-white/60 p-3 rounded-lg mt-4"
+              onPress={() => setIsDateModalVisible(false)}
+            >
+              <Text className="text-center text-black text-lg ">Submit</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   return (
-    <ScrollView className="flex-1 bg-gray-800 p-4">
-      <View className="items-center mb-4 flex-row justify-between flex-1">
+    <ScrollView className="flex-1 bg-gray-800 p-4 ">
+      {isDateModalVisible && dateModal()}
+      <View className="items-center flex-row justify-between flex-1 h-[150px] mb-9">
         <TouchableOpacity
-          className={`h-[${buttonsize}px] w-[${buttonsize}px] justify-center items-center bg-gray-500 p-4 rounded-full mb-4`}
+          className={`h-full w-[45%] justify-center items-center
+          ${isLent ? "bg-gray-400 border-gray-500" : "bg-gray-500"} p-4 rounded-full mb-4`}
           onPress={() => setIsLent(true)}
         >
           <Text>Lent</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          className={`h-[${buttonsize}px] w-[${buttonsize}px] justify-center items-center bg-gray-500 p-4 rounded-full mb-4`}
+          className={`h-full w-[45%] justify-center items-center
+            ${isLent ? "bg-gray-500" : "bg-gray-400"}  p-4 rounded-full mb-4`}
           onPress={() => setIsLent(false)}
         >
           <Text>Stored</Text>
@@ -90,18 +152,39 @@ const buttonsize=150;
           onChangeText={setItemName}
           placeholder="Enter item name"
         />
-        <InputComponent
-          label="Stored Location"
-          value={itemName}
-          onChangeText={setItemName}
-          placeholder="Enter item name"
-        />
-        <InputComponent
-          label="Person Name"
-          value={itemName}
-          onChangeText={setItemName}
-          placeholder="Enter item name"
-        />
+        {!isLent ? (
+          <InputComponent
+            label="Stored Location"
+            value={itemLocation}
+            onChangeText={setItemLocation}
+            placeholder="Enter Stored Location"
+          />
+        ) : (
+          <InputComponent
+            label="Person Name"
+            value={personName}
+            onChangeText={setPersonName}
+            placeholder="Enter Person Name"
+          />
+        )}
+        <TouchableOpacity
+          className="bg-gray-500 p-2 pt-3 rounded-lg mb-4"
+          onPress={() => setIsDateModalVisible(true)}
+        >
+          <Text className="text-white text-lg mb-2 text-center">Set Date</Text>
+        </TouchableOpacity>
+
+        <Text className="text-gray-400 text-lg   h-[50px] bg-gray-500 p-2 pt-3 rounded-lg">
+          {formatDate(
+            selectedDate instanceof Date ? selectedDate : undefined
+          ) || "No Date "}
+        </Text>
+        <TouchableOpacity
+          className="bg-gray-500 p-2 pt-3 rounded-lg mt-4"
+          onPress={handleSubmit}
+        >
+          <Text className="text-white text-lg mb-2 text-center">Submit</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

@@ -47,8 +47,8 @@ export default function Navbar() {
 
   return (
     <View className="w-full bg-red-500 border-b border-gray-300">
-      <View className="flex flex-row items-center justify-between bg-gray-500 p-3 ">
-        <Text className="text-3xl font-bold text-white" onPress={openMenu}>
+      <View className="flex flex-row items-center justify-between bg-gray-500 p-3 px-6">
+        <Text className="text-4xl font-bold text-white" onPress={openMenu}>
           ☰
         </Text>
         <Text className=" flex-1 text-center text-white text-lg font-bold">
