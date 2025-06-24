@@ -55,7 +55,7 @@ export default function Settings() {
             Theme
           </Text>
           <View
-            className={`w-3/5 flex-row rounded-3xl justify-between ${theme === "dark" ? "bg-gray-700" : "bg-blue-300"}  p-1`}
+            className={`w-3/5 flex-row rounded-3xl justify-between ${theme === "dark" ? "bg-gray-500" : "bg-blue-300"}  p-1`}
           >
             <TouchableOpacity
               className={`flex-1 rounded-3xl py-2 ${
