@@ -2,7 +2,7 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
-// 1. Connect to database
+
 $con = mysqli_connect("localhost", "root", "", "wits");
 if (!$con) {
     echo json_encode(["success" => false, "message" => "Database connection failed"]);

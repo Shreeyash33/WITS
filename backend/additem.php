@@ -4,7 +4,6 @@ header('Content-Type:application/json');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// 1. Connect to the database
 $con = mysqli_connect("localhost", "root", "", "wits");
 
 if (!$con) {
