@@ -49,7 +49,7 @@ export default function Adddata() {
     };
     try {
       const response = await fetch(
-        APIURL+"Hackathon/WITS/backend/additem.php",
+        APIURL+"additem.php",
         {
           method: "POST",
           headers: {

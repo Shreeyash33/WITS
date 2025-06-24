@@ -16,7 +16,7 @@ export default function History() {
   const fetchData = async () => {
     try {
       const res = await fetch(
-        APIURL+"Hackathon/WITS/backend/getitem.php"
+        APIURL+"getitem.php"
       );
       const json = await res.json();
 
@@ -50,7 +50,7 @@ export default function History() {
     });
     try {
       const res = await fetch(
-        APIURL+"Hackathon/WITS/backend/deleteitem.php",
+        APIURL+"deleteitem.php",
         {
           method: "POST",
           headers: {
