@@ -1,30 +1,118 @@
-import formatDate from "@/components/formatDate";
-import InputComponent from "@/components/InputComponent";
+import { Alert, ScrollView, Text } from "react-native";
+import { TouchableOpacity } from "react-native";
+import { View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
 import { useTheme } from "@/components/ThemeSelector";
-import { useEffect, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
+import formatDate from "@/components/formatDate";
+import DateModal from "@/components/dateModal";
+import InputComponent from "@/components/InputComponent";
+import { Data } from "@/components/Data";
+const APIURL = "http://192.168.1.200/backend/";
 
-//from https://github.com/farhoudshapouran/react-native-ui-datepicker?tab=readme-ov-file
-import DateTimePicker, {
-  DateType,
-  useDefaultClassNames,
-} from "react-native-ui-datepicker";
-
-
-const APIURL="http://192.168.1.200/backend/";
 export default function Adddata() {
-  const defaultClassNames = useDefaultClassNames();
+  const { theme } = useTheme();
+  const params = useLocalSearchParams();
+  const hasEdited = params.hasEdited === "true";
+  const editItemName = Array.isArray(params.editItemName)
+    ? params.editItemName[0]
+    : (params.editItemName ?? "");
+  const editPersonName = Array.isArray(params.editPersonName)
+    ? params.editPersonName[0]
+    : (params.editPersonName ?? "");
+  const editItemLocation = Array.isArray(params.editItemLocation)
+    ? params.editItemLocation[0]
+    : (params.editItemLocation ?? "");
+  const editIslent = params.editIslent === "true";
 
-  const [isLent, setIsLent] = useState(true);
-  const [itemName, setItemName] = useState("");
-  const [personName, setPersonName] = useState("");
-  const [itemLocation, setItemLocation] = useState("");
-  const [selectedDate, setSelectedDate] = useState<string | undefined>(
-    new Date().toString()
+  const [isLent, setIsLent] = useState(hasEdited ? editIslent : true);
+  const [itemName, setItemName] = useState(hasEdited ? editItemName : "");
+  const [personName, setPersonName] = useState(hasEdited ? editPersonName : "");
+  const [itemLocation, setItemLocation] = useState(
+    hasEdited ? editItemLocation : ""
   );
-  let today = new Date();
+
+  // const editSelectedDate = Array.isArray(params.editSelectedDate)
+  //   ? params.editSelectedDate[0]
+  //   : (params.editSelectedDate ?? new Date().toString());
+  const editSelectedDate = useMemo(() => {
+    return params.editSelectedDate;
+  }, [params]);
+
+  const [selectedDate, setSelectedDate] = useState<string | undefined>(
+    // @ts-ignore
+    hasEdited ? new Date(editSelectedDate).toString() : new Date().toString()
+  );
+
+  useEffect(() => {
+    editSelectedDate && setSelectedDate(editSelectedDate as any);
+  }, [editSelectedDate]);
   const [isCurrentDate, setIsCurrentDate] = useState(true);
+
   const [isDateModalVisible, setIsDateModalVisible] = useState(false);
+  
+
+  const handleDelete = async (item: Data) => {
+    const datasended = JSON.stringify({
+      itemName: item.itemName,
+      personName: item.personName,
+      itemLocation: item.storedLocation,
+      isLent: item.isLent,
+      selectedDate: item.selectedDate,
+    });
+    try {
+      const res = await fetch(APIURL + "deleteitem.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: datasended,
+      });
+    } catch (error) {
+      console.error("Delete error:", error);
+      Alert.alert("Error", "Server error during deletion.");
+    }
+  };
+
+  const handleSubmit = async (item: Data) => {
+    if (isLent) setItemLocation("");
+    else setPersonName("");
+
+    const payload = { ...item };
+    try {
+      const response = await fetch(APIURL + "additem.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await response.json();
+      if (json.success) {
+        alert("Item saved successfully!");
+        handleDelete(item);
+        clearData();
+      } else {
+        alert("Failed to save item.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Server error.");
+    }
+  };
+
+  const dateModal = () => {
+    return (
+      <DateModal
+        isDateModalVisible={isDateModalVisible}
+        setIsDateModalVisible={setIsDateModalVisible}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+        setIsCurrentDate={setIsCurrentDate}
+      />
+    );
+  };
 
   function clearData() {
     setIsLent(true);
@@ -35,109 +123,6 @@ export default function Adddata() {
     setIsCurrentDate(true);
     setIsDateModalVisible(false);
   }
-
-  const handleSubmit = async () => {
-    if (isLent) setItemLocation("");
-    else setPersonName("");
-
-    const payload = {
-      itemName,
-      personName,
-      itemLocation,
-      isLent,
-      selectedDate: formatDate(selectedDate || "No Date"),
-    };
-    try {
-      const response = await fetch(
-        APIURL+"additem.php",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      const json = await response.json();
-      if (json.success) {
-        alert("Item saved successfully!");
-        clearData();
-      } else {
-        alert("Failed to save item.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Server error.");
-    }
-  };
-  const buttonsize = 100;
-  const { theme } = useTheme();
-
-  const dateModal = () => {
-    return (
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isDateModalVisible}
-      >
-        <View className={`flex-1 bg-black/60 justify-center items-center`}>
-          <View
-            className={`${theme === "dark" ? "bg-gray-700" : "bg-gray-300"} rounded-lg p-5 w-11/12`}
-          >
-            <Text
-              className={`${theme === "dark" ? "text-white/70" : "text-black"}  text-lg mb-2 text-center font-bold`}
-            >
-              Set Date and Time
-            </Text>
-
-            <View
-              className={` border border-gray-500 rounded-md ${theme === "dark" ? "" : "bg-sky-50"} `}
-            >
-              <DateTimePicker
-                classNames={{
-                  ...defaultClassNames,
-                  today: theme==="dark"?"border border-white":"border border-black",
-                  today_label: theme==="dark"?"text-blue-200":"text-blue-800",
-                  selected:
-                    theme === "dark"
-                      ? "border bg-gray-500 border-gray-300"
-                      : "bg-sky-300",
-                  selected_label: "text-white",
-                  day_label: theme==="dark"?"text-gray-200":"text-gray-800",
-               
-                  time_label:theme==="dark"?"text-gray-200":"text-gray-800",
-                  weekday_label: theme==="dark"?"text-gray-200":"text-gray-800",
-                  disabled: "opacity-50",
-                  
-
-                }}
-                minDate={today}
-                mode="single"
-                date={selectedDate ?? new Date()}
-                onChange={({ date }: { date: DateType }) =>
-                  setSelectedDate(date?.toString())
-                }
-                timePicker={true}
-                use12Hours
-              />
-            </View>
-
-            <TouchableOpacity
-              className={`${theme === "dark" ? "bg-white/60 " : "bg-sky-400"} p-3 rounded-lg mt-4`}
-              onPress={() => {
-                setIsDateModalVisible(false);
-                setIsCurrentDate(false);
-              }}
-            >
-              <Text className="text-center text-black text-lg ">Submit</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    );
-  };
-
   return (
     <ScrollView
       className={`flex-1 ${theme === "dark" ? "bg-black" : "bg-sky-50"} p-4 `}
@@ -209,12 +194,20 @@ export default function Adddata() {
           <Text
             className={`${theme === "dark" ? "text-white bg-teal-700/60" : "text-black bg-sky-50 border border-sky-300"} text-lg  p-2 pt-3 rounded-lg`}
           >
-            {formatDate(selectedDate) || "No Date "}
+            {hasEdited ? selectedDate : formatDate(selectedDate) || "No Date "}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           className={`${theme === "dark" ? "bg-teal-700" : "bg-blue-300"}  p-2 pt-3 rounded-lg mt-4`}
-          onPress={handleSubmit}
+          onPress={() =>
+            handleSubmit({
+              isLent,
+              itemName,
+              personName,
+              storedLocation: itemLocation,
+              selectedDate: selectedDate ?? "",
+            })
+          }
         >
           <Text className={`text-white text-lg mb-2 text-center`}>Submit</Text>
         </TouchableOpacity>

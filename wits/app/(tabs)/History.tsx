@@ -1,27 +1,30 @@
-import { Data, hardcodedData } from "@/components/Data";
-import formatDate from "@/components/formatDate";
+import { Data } from "@/components/Data";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/components/ThemeSelector";
-import { ScrollView, View, Text, Alert, TouchableOpacity } from "react-native";
+import {
+  ScrollView,
+  View,
+  Text,
+  Alert,
+  TouchableOpacity,
+  Modal,
+} from "react-native";
+import { useRouter } from "expo-router";
 
-const APIURL="http://192.168.1.200/backend/";
+const APIURL = "http://192.168.1.200/backend/";
 
 export default function History() {
-  // const [data, setData] = useState<Data[]>(hardcodedData);
   const [data, setData] = useState<Data[]>([]);
   const [loading, setLoading] = useState(true);
   const [isRefreshed, setIsRefreshed] = useState(false);
-
   const { theme } = useTheme();
   const fetchData = async () => {
     try {
-      const res = await fetch(
-        APIURL+"getitem.php"
-      );
+      const res = await fetch(APIURL + "getitem.php");
       const json = await res.json();
 
       const transformedData = json
-        .filter((item: any) => item.Item_Name) // skip if no item name
+        .filter((item: any) => item.Item_Name)
         .map((item: any) => ({
           itemName: item.Item_Name,
           isLent: item.Lent,
@@ -49,25 +52,19 @@ export default function History() {
       selectedDate: item.selectedDate,
     });
     try {
-      const res = await fetch(
-        APIURL+"deleteitem.php",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: datasended,
-        }
-      );
+      const res = await fetch(APIURL + "deleteitem.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: datasended,
+      });
 
       const json = await res.json();
       if (json.success) {
         fetchData();
-      }
-      else
-      {
+      } else {
         Alert.alert("Delete Failed", "Could not delete item from server.");
-
       }
     } catch (error) {
       console.error("Delete error:", error);
@@ -76,14 +73,31 @@ export default function History() {
     }
   };
 
+  const router = useRouter();
+
+  const handleEdit = async (item: Data) => {
+    // await handleDelete(item);
+    setTimeout(() => {}, 3000);
+    router.push({
+      pathname: "./Adddata",
+      params: {
+        hasEdited: "true",
+        editItemName: item.itemName,
+        editPersonName: item.personName,
+        editItemLocation: item.storedLocation,
+        editIslent: item.isLent ? "true" : "false",
+        editSelectedDate: item.selectedDate,
+      },
+    });
+  };
   useEffect(() => {
     setIsRefreshed(false);
   }, []);
   useEffect(() => {
-    // setData(getdefdata());
     fetchData();
     setIsRefreshed(false);
   }, [isRefreshed]);
+
   return (
     <ScrollView
       className={`flex-1 ${theme === "dark" ? "bg-black" : "bg-sky-50"} p-4`}
@@ -100,20 +114,23 @@ export default function History() {
                 key={index}
                 className={`${theme === "dark" ? "bg-gray-900" : "bg-sky-100"} flex-row border justify-between rounded-md w-full mb-2 pl-3`}
               >
-                <View className="py-2">
+                <View className="py-2 w-[45%]  ">
                   <Text
+                    numberOfLines={1}
                     className={`${theme === "dark" ? "text-white" : "text-black"} font-bold text-lg`}
                   >
                     {item.itemName}
                   </Text>
                   {item.isLent ? (
                     <Text
+                      numberOfLines={1}
                       className={`${theme === "dark" ? "text-white" : "text-black"}`}
                     >
                       {item.personName}
                     </Text>
                   ) : (
                     <Text
+                      numberOfLines={1}
                       className={`${theme === "dark" ? "text-white" : "text-black"}`}
                     >
                       {item.storedLocation}
@@ -125,9 +142,15 @@ export default function History() {
                     {item.selectedDate}
                   </Text>
                 </View>
-                <View className="w-[100px] h-[55px] right-0 justify-center items-end pr-2">
+                <View className="w-[50%] h-[55px] flex-row right-0 justify-center items-end pr-2">
                   <TouchableOpacity
-                    className="bg-red-500  right-0 items-center justify-center rounded-md py-3 w-20"
+                    className="bg-teal-700  right-0 items-center justify-center rounded-md py-3 w-20 mr-2 "
+                    onPress={() => handleEdit(item)}
+                  >
+                    <Text className={`text-white text-center`}>Edit</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    className="bg-red-500 right-0 items-center justify-center rounded-md py-3 w-20"
                     onPress={() => handleDelete(item)}
                   >
                     <Text className={`text-white text-center`}>Delete</Text>
