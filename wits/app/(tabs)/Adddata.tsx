@@ -50,7 +50,6 @@ export default function Adddata() {
   const [isCurrentDate, setIsCurrentDate] = useState(true);
 
   const [isDateModalVisible, setIsDateModalVisible] = useState(false);
-  
 
   const handleDelete = async (item: Data) => {
     const datasended = JSON.stringify({
@@ -78,7 +77,13 @@ export default function Adddata() {
     if (isLent) setItemLocation("");
     else setPersonName("");
 
-    const payload = { ...item };
+    const payload = {
+      isLent,
+      itemName,
+      personName,
+      itemLocation,
+      selectedDate,
+    };
     try {
       const response = await fetch(APIURL + "additem.php", {
         method: "POST",
@@ -91,7 +96,7 @@ export default function Adddata() {
       const json = await response.json();
       if (json.success) {
         alert("Item saved successfully!");
-        hasEdited&&handleDelete(item);
+        hasEdited && handleDelete(item);
         clearData();
       } else {
         alert("Failed to save item.");
