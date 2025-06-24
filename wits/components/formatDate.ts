@@ -1,6 +1,8 @@
+export default function formatDate(dateString: string | undefined): string {
+  if (!dateString) return "";
 
-export default function formatDate(date: Date | undefined): string {
-  if (!date) return "";
+  const parsedDate = new Date(dateString);
+  if (isNaN(parsedDate.getTime())) return "";
 
   const formatter = new Intl.DateTimeFormat("en-us", {
     year: "numeric",
@@ -11,5 +13,5 @@ export default function formatDate(date: Date | undefined): string {
     hour12: true,
   });
 
-  return formatter.format(date);
+  return formatter.format(parsedDate);
 }

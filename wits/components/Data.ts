@@ -1,4 +1,3 @@
-import { DateType } from "react-native-ui-datepicker";
 
 export interface Data {
   id: number;
@@ -6,7 +5,7 @@ export interface Data {
   isLent: boolean;
   personName: string;
   storedLocation: string;
-  selectedDate: DateType;
+  selectedDate: string;
 }
 
 export const hardcodedData: Data[] = [
@@ -16,7 +15,7 @@ export const hardcodedData: Data[] = [
     isLent: false,
     personName: "",
     storedLocation: "loc1",
-    selectedDate: new Date(),
+    selectedDate: (new Date()).toString(),
   },
   {
     id: 1001,
@@ -24,7 +23,7 @@ export const hardcodedData: Data[] = [
     isLent: true,
     personName: "per1",
     storedLocation: "",
-    selectedDate: new Date(),
+    selectedDate: (new Date()).toString(),
   },
 ];
 

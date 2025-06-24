@@ -6,6 +6,7 @@ interface InputComponentProps {
   placeholder?: string;
   value?: string;
   onChangeText?: (text: string) => void;
+  theme?: string;
 }
 
 export default function InputComponent({
@@ -13,17 +14,20 @@ export default function InputComponent({
   placeholder,
   value,
   onChangeText,
+  theme = "dark",
 }: InputComponentProps) {
-
-    const [isFocused, setIsFocused] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   return (
     <View className="flex-1 mb-2">
-      <Text className="text-xl font-bold text-white">{label}</Text>
+      <Text
+        className={`text-xl font-bold ${theme === "dark" ? "text-white" : "text-black"} `}
+      >
+        {label}
+      </Text>
       <TextInput
-        className="bg-teal-500/10 rounded-md h-[50px] text-lg text-white"
+        className={`${theme === "dark" ? "bg-teal-500/10 text-white" : "border border-sky-300 bg-sky-50 text-black"}  rounded-md h-[50px] text-lg `}
         placeholder={placeholder}
-        
-        placeholderTextColor="white"
+        placeholderTextColor={theme === "dark" ? "white" : "black"}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         value={value}
