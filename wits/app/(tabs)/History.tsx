@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@/components/ThemeSelector";
 import { ScrollView, View, Text, Alert, TouchableOpacity } from "react-native";
 
-const APIURL="http://192.168.1.200/";
+const APIURL="http://192.168.1.200/backend/";
 
 export default function History() {
   // const [data, setData] = useState<Data[]>(hardcodedData);

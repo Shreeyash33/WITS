@@ -11,7 +11,7 @@ import DateTimePicker, {
 } from "react-native-ui-datepicker";
 
 
-const APIURL="http://192.168.1.200/";
+const APIURL="http://192.168.1.200/backend/";
 export default function Adddata() {
   const defaultClassNames = useDefaultClassNames();
 
