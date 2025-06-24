@@ -91,7 +91,7 @@ export default function Adddata() {
       const json = await response.json();
       if (json.success) {
         alert("Item saved successfully!");
-        handleDelete(item);
+        hasEdited&&handleDelete(item);
         clearData();
       } else {
         alert("Failed to save item.");
