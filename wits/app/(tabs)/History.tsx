@@ -10,6 +10,7 @@ import {
   Modal,
 } from "react-native";
 import { useRouter } from "expo-router";
+import formatDate from "@/components/formatDate";
 
 const APIURL = "http://192.168.1.200/backend/";
 
@@ -139,7 +140,7 @@ export default function History() {
                   <Text
                     className={`${theme === "dark" ? "text-white" : "text-black"}`}
                   >
-                    {item.selectedDate}
+                    {formatDate(item.selectedDate)}
                   </Text>
                 </View>
                 <View className="w-[50%] h-[55px] flex-row right-0 justify-center items-end pr-2">
