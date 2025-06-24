@@ -10,6 +10,8 @@ import DateTimePicker, {
   useDefaultClassNames,
 } from "react-native-ui-datepicker";
 
+
+const APIURL="http://192.168.1.200/";
 export default function Adddata() {
   const defaultClassNames = useDefaultClassNames();
 
@@ -47,7 +49,7 @@ export default function Adddata() {
     };
     try {
       const response = await fetch(
-        "http://192.168.0.44/Hackathon/WITS/backend/additem.php",
+        APIURL+"Hackathon/WITS/backend/additem.php",
         {
           method: "POST",
           headers: {

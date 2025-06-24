@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useTheme } from "@/components/ThemeSelector";
 import { ScrollView, View, Text, Alert, TouchableOpacity } from "react-native";
 
+const APIURL="http://192.168.1.200/";
+
 export default function History() {
   // const [data, setData] = useState<Data[]>(hardcodedData);
   const [data, setData] = useState<Data[]>([]);
@@ -14,7 +16,7 @@ export default function History() {
   const fetchData = async () => {
     try {
       const res = await fetch(
-        "http://192.168.0.44/Hackathon/WITS/backend/getitem.php"
+        APIURL+"Hackathon/WITS/backend/getitem.php"
       );
       const json = await res.json();
 
@@ -48,7 +50,7 @@ export default function History() {
     });
     try {
       const res = await fetch(
-        "http://192.168.0.44/Hackathon/WITS/backend/deleteitem.php",
+        APIURL+"Hackathon/WITS/backend/deleteitem.php",
         {
           method: "POST",
           headers: {
