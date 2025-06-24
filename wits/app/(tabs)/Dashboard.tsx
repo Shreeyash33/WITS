@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/Navbar";
+import { useTheme } from "@/components/ThemeSelector";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
@@ -37,22 +38,25 @@ export default function Dashboard() {
     console.log("button pressed");
     router.push("Adddata" as any);
   };
+  
+  const { theme } = useTheme();
   return (
-    <View className="flex-1 items-center  bg-black p-4 ">
-      <View className=" items-center justify-center h-[90%]">
-        <Text className="text-4xl font-bold text-gray-300 italic  ">
+    <View className={`flex-1 h-full items-center  ${theme === "dark" ? "bg-black" : " bg-sky-50 "} p-4 `}>
+      <View className=" items-center justify-center h-[95%] w-full ">
+        <Text className={`text-4xl font-bold ${theme === "dark" ? "text-white" : "text-black"} italic  `}>
           Welcome to WITS!
         </Text>
-        <Text className="text-md font-light text-white mt-4 italic ">
-          {randomsuggestion}
+        <Text className={`text-md font-light ${theme === "dark" ? "text-white" : "text-black"} mt-4 italic `} >
+          {randomsuggestion} 
         </Text>
       </View>
       <View className=" w-full ">
         <TouchableOpacity
           onPress={handlepress}
-          className="bg-white/10 active:bg-white/50 w-full items-center py-3 rounded-md"
-        >
-          <Text className="text-white active:text-black">Add an Item</Text>
+          className={`${theme === "dark" ? " bg-white/10 " : " bg-black/10 "} w-full items-center py-3 rounded-md`} >
+          <Text className={`${theme === "dark" ? " text-white " : " text-black "}`}>
+            Add an Item
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

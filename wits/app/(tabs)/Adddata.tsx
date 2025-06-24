@@ -1,5 +1,6 @@
 import formatDate from "@/components/formatDate";
 import InputComponent from "@/components/InputComponent";
+import { useTheme } from "@/components/ThemeSelector";
 import { useEffect, useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
 
@@ -12,34 +13,41 @@ import DateTimePicker, {
 export default function Adddata() {
   const defaultClassNames = useDefaultClassNames();
 
-  const [ID, setID] = useState(0);
   const [isLent, setIsLent] = useState(true);
   const [itemName, setItemName] = useState("");
   const [personName, setPersonName] = useState("");
   const [itemLocation, setItemLocation] = useState("");
-  const [selectedDate, setSelectedDate] = useState<DateType | undefined>(
-    new Date()
+  const [selectedDate, setSelectedDate] = useState<string | undefined>(
+    new Date().toString()
   );
   let today = new Date();
   const [isCurrentDate, setIsCurrentDate] = useState(true);
   const [isDateModalVisible, setIsDateModalVisible] = useState(false);
-  const [dataChanged, setDataChanged] = useState(false);
+
+  function clearData() {
+    setIsLent(true);
+    setItemName("");
+    setPersonName("");
+    setItemLocation("");
+    setSelectedDate(new Date().toString());
+    setIsCurrentDate(true);
+    setIsDateModalVisible(false);
+  }
 
   const handleSubmit = async () => {
-    setID(ID+1);
+    if (isLent) setItemLocation("");
+    else setPersonName("");
+
     const payload = {
-      ID,
       itemName,
       personName,
       itemLocation,
       isLent,
-      selectedDate: formatDate(
-        selectedDate instanceof Date ? selectedDate : undefined
-      ),
+      selectedDate: formatDate(selectedDate || "No Date"),
     };
     try {
       const response = await fetch(
-        "http://192.168.1.200/backend/addItem.php",
+        "http://192.168.0.44/Hackathon/WITS/backend/additem.php",
         {
           method: "POST",
           headers: {
@@ -50,9 +58,9 @@ export default function Adddata() {
       );
 
       const json = await response.json();
-      if (json.status === "success") {
+      if (json.success) {
         alert("Item saved successfully!");
-        setDataChanged(true);
+        clearData();
       } else {
         alert("Failed to save item.");
       }
@@ -62,6 +70,7 @@ export default function Adddata() {
     }
   };
   const buttonsize = 100;
+  const { theme } = useTheme();
 
   const dateModal = () => {
     return (
@@ -70,33 +79,42 @@ export default function Adddata() {
         transparent={true}
         visible={isDateModalVisible}
       >
-        <View className="flex-1 bg-black/60 justify-center items-center">
-          <View className="bg-gray-700 rounded-lg p-5 w-11/12">
-            <Text className="text-white text-lg mb-2 text-center">
+        <View className={`flex-1 bg-black/60 justify-center items-center`}>
+          <View
+            className={`${theme === "dark" ? "bg-gray-700" : "bg-gray-300"} rounded-lg p-5 w-11/12`}
+          >
+            <Text
+              className={`${theme === "dark" ? "text-white/70" : "text-black"}  text-lg mb-2 text-center font-bold`}
+            >
               Set Date and Time
             </Text>
 
-            <View className=" border border-gray-500 rounded-md">
+            <View
+              className={` border border-gray-500 rounded-md ${theme === "dark" ? "" : "bg-sky-50"} `}
+            >
               <DateTimePicker
                 classNames={{
                   ...defaultClassNames,
-                  today: "border border-white",
-                  today_label: "text-blue-500",
-                  selected: "border bg-gray-500 border-gray-300",
+                  today: theme==="dark"?"border border-white":"border border-black",
+                  today_label: theme==="dark"?"text-blue-200":"text-blue-800",
+                  selected:
+                    theme === "dark"
+                      ? "border bg-gray-500 border-gray-300"
+                      : "bg-sky-300",
                   selected_label: "text-white",
-                  day_label: "text-gray-200",
-                  year_label: "text-gray-200",
-                  month_label: "text-gray-200",
-                  time_label: "text-gray-200",
-                  weekday_label: "text-gray-200",
-                  header: "text-gray-200",
+                  day_label: theme==="dark"?"text-gray-200":"text-gray-800",
+               
+                  time_label:theme==="dark"?"text-gray-200":"text-gray-800",
+                  weekday_label: theme==="dark"?"text-gray-200":"text-gray-800",
                   disabled: "opacity-50",
+                  
+
                 }}
                 minDate={today}
                 mode="single"
                 date={selectedDate ?? new Date()}
                 onChange={({ date }: { date: DateType }) =>
-                  setSelectedDate(date)
+                  setSelectedDate(date?.toString())
                 }
                 timePicker={true}
                 use12Hours
@@ -104,7 +122,7 @@ export default function Adddata() {
             </View>
 
             <TouchableOpacity
-              className="bg-white/60 p-3 rounded-lg mt-4"
+              className={`${theme === "dark" ? "bg-white/60 " : "bg-sky-400"} p-3 rounded-lg mt-4`}
               onPress={() => {
                 setIsDateModalVisible(false);
                 setIsCurrentDate(false);
@@ -119,30 +137,43 @@ export default function Adddata() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-black p-4 ">
+    <ScrollView
+      className={`flex-1 ${theme === "dark" ? "bg-black" : "bg-sky-50"} p-4 `}
+    >
       {isDateModalVisible && dateModal()}
       <View className="items-center flex-row justify-between flex-1 h-[150px] mb-9">
         <TouchableOpacity
           className={`h-full w-[45%] justify-center items-center
-          ${isLent ? "bg-teal-700 border-gray-500" : "bg-gray-500"} p-4 rounded-full mb-4`}
+          ${isLent ? (theme === "dark" ? "bg-teal-700 border-gray-500" : " bg-blue-300") : "bg-sky-100"} p-4 rounded-full mb-4`}
           onPress={() => setIsLent(true)}
         >
-          <Text className="text-white text-xl font-bold">Lent</Text>
+          <Text
+            className={`${theme === "dark" ? "text-white" : "text-black"}text-white text-xl font-bold`}
+          >
+            Lent
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           className={`h-full w-[45%] justify-center items-center
-            ${isLent ? "bg-gray-500" : "bg-teal-700"}  p-4 rounded-full mb-4`}
+          ${isLent ? "bg-sky-100" : theme === "dark" ? "bg-teal-700 border-gray-500" : " bg-blue-300"} p-4 rounded-full mb-4`}
           onPress={() => setIsLent(false)}
         >
-          <Text className="text-white text-xl font-bold">Stored</Text>
+          <Text
+            className={`${theme === "dark" ? "text-white" : "text-black"}text-white text-xl font-bold`}
+          >
+            Stored
+          </Text>
         </TouchableOpacity>
       </View>
-      <View className="bg-gray-900 p-4 rounded-lg">
+      <View
+        className={`${theme === "dark" ? "bg-gray-900" : "bg-sky-100"} p-4 rounded-lg`}
+      >
         <InputComponent
           label="Item Name"
           value={itemName}
           onChangeText={setItemName}
           placeholder="Enter item name"
+          theme={theme}
         />
         {!isLent ? (
           <InputComponent
@@ -150,6 +181,7 @@ export default function Adddata() {
             value={itemLocation}
             onChangeText={setItemLocation}
             placeholder="Enter Stored Location"
+            theme={theme}
           />
         ) : (
           <InputComponent
@@ -157,6 +189,7 @@ export default function Adddata() {
             value={personName}
             onChangeText={setPersonName}
             placeholder="Enter Person Name"
+            theme={theme}
           />
         )}
         <TouchableOpacity
@@ -166,22 +199,22 @@ export default function Adddata() {
               setIsDateModalVisible(true);
               setIsCurrentDate(false);
             } else {
-              setSelectedDate(new Date());
+              setSelectedDate(new Date().toString());
               setIsCurrentDate(true);
             }
           }}
         >
-          <Text className="text-white text-lg bg-teal-700/60 p-2 pt-3 rounded-lg">
-            {formatDate(
-              selectedDate instanceof Date ? selectedDate : undefined
-            ) || "No Date "}
+          <Text
+            className={`${theme === "dark" ? "text-white bg-teal-700/60" : "text-black bg-sky-50 border border-sky-300"} text-lg  p-2 pt-3 rounded-lg`}
+          >
+            {formatDate(selectedDate) || "No Date "}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          className="bg-teal-700 p-2 pt-3 rounded-lg mt-4"
+          className={`${theme === "dark" ? "bg-teal-700" : "bg-blue-300"}  p-2 pt-3 rounded-lg mt-4`}
           onPress={handleSubmit}
         >
-          <Text className="text-white text-lg mb-2 text-center">Submit</Text>
+          <Text className={`text-white text-lg mb-2 text-center`}>Submit</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
